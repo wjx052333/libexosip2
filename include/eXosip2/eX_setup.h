@@ -436,6 +436,37 @@ int eXosip_guess_localip(struct eXosip_t *excontext, int family, char *address, 
 
 /** @} */
 
+/**
+ * @defgroup eXosip2_next_hop eXosip2 next-hop routing override
+ * @ingroup eXosip2_setup
+ * @{
+ */
+
+/**
+ * Set a next-hop routing override for outgoing SIP requests.
+ *
+ * When set, UDP/TCP transports will route packets to this host:port instead
+ * of the request-URI host. This allows Request-URI to use a logical domain
+ * (e.g. sip:deviceId@gb28181domain) while physically delivering to the
+ * device's registered IP address.
+ *
+ * Must be called under eXosip_lock(). Cleared by eXosip_clear_next_hop().
+ *
+ * @param excontext  eXosip_t instance.
+ * @param host       Physical destination hostname or IP address.
+ * @param port       Physical destination port (use 0 for default 5060).
+ */
+void eXosip_set_next_hop(struct eXosip_t *excontext, const char *host, int port);
+
+/**
+ * Clear the next-hop routing override set by eXosip_set_next_hop().
+ *
+ * @param excontext  eXosip_t instance.
+ */
+void eXosip_clear_next_hop(struct eXosip_t *excontext);
+
+/** @} */
+
 #ifdef __cplusplus
 }
 #endif

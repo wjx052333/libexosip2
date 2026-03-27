@@ -638,6 +638,14 @@ struct eXosip_t {
   char default_contact_displayname[256];
   int opt_sessiontimers_force;
   int opt_force_connectionreuse;
+
+  /* next_hop: when set, overrides request-URI host for physical routing.
+   * Allows Request-URI to use a GB28181 domain (e.g. sip:id@3402000000)
+   * while the packet is physically delivered to the device's IP address.
+   * Set via eXosip_set_next_hop() before send, clear with eXosip_clear_next_hop().
+   * Must be called under eXosip_lock(). */
+  char next_hop_host[256];
+  int  next_hop_port;
 };
 
 int _eXosip_guess_ip_for_via(struct eXosip_t *excontext, int family, char *address, int size);

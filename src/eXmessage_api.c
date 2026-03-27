@@ -74,6 +74,16 @@ int eXosip_message_send_request(struct eXosip_t *excontext, osip_message_t *mess
   sipevent = osip_new_outgoing_sipmessage(message);
   sipevent->transactionid = transaction->transactionid;
 
+  /* next_hop: if set, bake the physical routing into the per-transaction NICT
+   * destination before waking the background thread.  _eXosip_wakeup() only
+   * writes to a pipe; the actual send fires asynchronously, so clearing
+   * next_hop_host after send_request() would race with the first UDP write. */
+  if (excontext->next_hop_host[0] != '\0' && transaction->nict_context != NULL) {
+    int nhport = excontext->next_hop_port > 0 ? excontext->next_hop_port : 5060;
+    osip_nict_set_destination(transaction->nict_context,
+                              osip_strdup(excontext->next_hop_host), nhport);
+  }
+
   osip_transaction_add_event(transaction, sipevent);
 
   _eXosip_wakeup(excontext);

@@ -1,0 +1,15 @@
+*.log
+**/Makefile
+**/*.o
+**/*.lo
+**/*.la
+**/.deps
+**/.libs
+tools/sip_monitor
+tools/sip_reg
+tools/sip_storm
+config.status
+exosip-config.h
+help/doxygen/doxygen.dox
+libtool
+stamp-h1

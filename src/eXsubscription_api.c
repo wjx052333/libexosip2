@@ -222,6 +222,14 @@ int eXosip_subscription_send_initial_request(struct eXosip_t *excontext, osip_me
   sipevent->transactionid = transaction->transactionid;
 
   osip_transaction_set_reserved5(transaction, js);
+
+  /* next_hop: bake physical routing into per-transaction NICT destination. */
+  if (excontext->next_hop_host[0] != '\0' && transaction->nict_context != NULL) {
+    int nhport = excontext->next_hop_port > 0 ? excontext->next_hop_port : 5060;
+    osip_nict_set_destination(transaction->nict_context,
+                              osip_strdup(excontext->next_hop_host), nhport);
+  }
+
   osip_transaction_add_event(transaction, sipevent);
 
   ADD_ELEMENT(excontext->j_subscribes, js);

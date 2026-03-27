@@ -40,6 +40,7 @@
 
 #ifdef HAVE_MEMORY_H
 #include <memory.h>
+#include <string.h>
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -1780,4 +1781,19 @@ int _eXosip_check_allow_header(eXosip_dialog_t *jd, osip_message_t *message) {
 
 #endif
   return 0;
+}
+
+void eXosip_set_next_hop(struct eXosip_t *excontext, const char *host, int port) {
+  if (excontext == NULL || host == NULL)
+    return;
+  strncpy(excontext->next_hop_host, host, sizeof(excontext->next_hop_host) - 1);
+  excontext->next_hop_host[sizeof(excontext->next_hop_host) - 1] = '\0';
+  excontext->next_hop_port = port;
+}
+
+void eXosip_clear_next_hop(struct eXosip_t *excontext) {
+  if (excontext == NULL)
+    return;
+  excontext->next_hop_host[0] = '\0';
+  excontext->next_hop_port = 0;
 }

@@ -1747,7 +1747,11 @@ static int tcp_tl_send_message(struct eXosip_t *excontext, osip_transaction_t *t
     return OSIP_WRONG_STATE;
   }
 
-  if (host == NULL) {
+  /* next_hop override: route to physical IP while keeping Request-URI domain */
+  if (excontext->next_hop_host[0] != '\0') {
+    host = excontext->next_hop_host;
+    port = excontext->next_hop_port > 0 ? excontext->next_hop_port : 5060;
+  } else if (host == NULL) {
     host = sip->req_uri->host;
 
     if (sip->req_uri->port != NULL)

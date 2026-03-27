@@ -1116,7 +1116,13 @@ static int udp_tl_send_message(struct eXosip_t *excontext, osip_transaction_t *t
   if (reserved->udp_socket < 0)
     return -1;
 
-  if (host == NULL) {
+  /* next_hop override: route to physical IP while keeping Request-URI domain.
+   * Takes priority over both the explicit host parameter and the NICT's
+   * nict_context->destination (derived from request-URI in __osip_nict_init). */
+  if (excontext->next_hop_host[0] != '\0') {
+    host = excontext->next_hop_host;
+    port = excontext->next_hop_port > 0 ? excontext->next_hop_port : 5060;
+  } else if (host == NULL) {
     host = sip->req_uri->host;
 
     if (sip->req_uri->port != NULL)
